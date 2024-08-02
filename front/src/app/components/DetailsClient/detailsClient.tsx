@@ -28,6 +28,7 @@ const DetailsClient = ({client}: IDetailsClientProp) => {
 
       <div className="text-left text-xl">
         <p>Nome: {data.name}</p>
+        <p>Sobrenome: {data.surName}</p>
         <p>Email: {data.email}</p>
         <p>Endereço: {data.address}</p>
         <p>Telefone: {phoneMask(data.phone.toString())}</p>
