@@ -29,8 +29,8 @@ class CreditCardRequest extends FormRequest
     {
        
         return [
-            'number' => 'required',
-            'expiration_date' => 'required',
+            'number' => 'required|min:16|max:16',
+            'expiration_date' => 'required|min:4|max:5',
             'client_id' => 'required',
             'cvv' => 'required',
      
@@ -41,8 +41,12 @@ class CreditCardRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'number.required' => 'O número é obrigatório!',
+            'number.required' => 'O número do cartão é obrigatório!',
+            'number.min' => 'Um cartão de crédito possui 16 dígitos',
+            'number.max' => 'Um cartão de crédito possui 16 dígitos',
             'expiration_date.required' => 'A data de validade é obrigatória',
+            'expiration_date.min' => 'Data de validade deve possuir 4 digitos',
+            'expiration_date.max' => 'Data de validade deve possuir 4 digitos',
             'cvv.required' => 'CVV é obrigatório!',
         ];
     }
