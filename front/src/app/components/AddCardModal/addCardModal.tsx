@@ -56,7 +56,7 @@ export function AddCardModal({clientId}: IAddCard) {
       queryClient.invalidateQueries(); 
     },
     onError: () => {
-      toast.error("Erro ao adicionar um cliente")
+  
     },
   });
  

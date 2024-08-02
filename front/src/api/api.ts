@@ -2,42 +2,62 @@ import { ClientRequest } from "@/requests/clientModelRequest";
 import { CreditCardRequest } from "@/requests/cardModelRequest";
 import { Client } from "@/app/components/Table/columns";
 import { ClientWithCards } from "@/requests/ClientWithCards";
+import toast from "react-hot-toast";
+
+
+interface ErrorResponse {
+  erros: {
+    [key: string]: string[];
+  };
+  status: boolean;
+}
 
 export async function PostClient(RequestBody: ClientRequest): Promise<Client | undefined> {
-  
-    try {
-        const res = await fetch("http://localhost:8000/api/client", {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(RequestBody),
-        })
-       
-        const {data} = await res.json()
-       
-        return data;
-        
-    } catch (error: any) {
-      throw new Error(error)
+    
+    const res = await fetch("http://localhost:8000/api/client", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(RequestBody),
+    })
+
+    
+    if (!res.ok) {
+      const errorData: ErrorResponse = await res.json();
+      const keys:string[] = Object.keys(errorData.erros);
+      const keyOne:string = keys[0] as string;
+
+      toast.error(errorData.erros[keyOne][0])
+      return;
     }
+  
+    const {data} = await res.json()
+  
+    return data;
+        
 }
+
 export async function getAllClients(): Promise<Client[]> {
 
-  try {
-    const response = await fetch('http://localhost:8000/api/client');
-    const {clients} = await response.json();
+    const res = await fetch('http://localhost:8000/api/client');
+
+
+    if (!res.ok) {
+      const errorData: ErrorResponse = await res.json();
+      const keys:string[] = Object.keys(errorData.erros);
+      const keyOne:string = keys[0] as string;
+
+      toast.error(errorData.erros[keyOne][0])
+    }
+
+    const {clients} = await res.json();
     return clients;
     
-  } catch (error: any) {
-    throw new Error(error)
-  }
-
 }
 
 export async function deleteClient(clientId: string){
 
-  try {
     const res = await fetch(`http://localhost:8000/api/client/${clientId}`, {
       method: 'DELETE',
       headers: {
@@ -45,31 +65,41 @@ export async function deleteClient(clientId: string){
       }
     })
 
-    return res.status;
-    
-  } catch (error: any) {
-    throw new Error(error)
-  }
+    if (!res.ok) {
+      const errorData: ErrorResponse = await res.json();
+      const keys:string[] = Object.keys(errorData.erros);
+      const keyOne:string = keys[0] as string;
+
+      toast.error(errorData.erros[keyOne][0])
+    }
+
+    return res.json();
 
 }
 
 export async function getClientAndCards(id: string): Promise<ClientWithCards> {
 
-  try {
-    const response = await fetch(`http://localhost:8000/api/client/${id}/cards`);
-    const { client } = await response.json();
+    const res = await fetch(`http://localhost:8000/api/client/${id}/cards`);
+    const { client } = await res.json();
+
+
+    if (!res.ok) {
+      const errorData: ErrorResponse = await res.json();
+      const keys:string[] = Object.keys(errorData.erros);
+      const keyOne:string = keys[0] as string;
+
+      toast.error(errorData.erros[keyOne][0])
+    }
 
     return client;
-  } catch (error: any) {
-    throw new Error(error)
-  }
+
 }
 
 
 
-export async function PostCreditCard(RequestBody: CreditCardRequest): Promise<CreditCardRequest | undefined> {
+export async function PostCreditCard(RequestBody: CreditCardRequest): Promise<CreditCardRequest> {
   
-  try {
+
       const res = await fetch("http://localhost:8000/api/cards", {
         method: 'POST',
         headers: {
@@ -77,19 +107,24 @@ export async function PostCreditCard(RequestBody: CreditCardRequest): Promise<Cr
         },
         body: JSON.stringify(RequestBody),
       })
-     
+      
+
+      if (!res.ok) {
+        const errorData: ErrorResponse = await res.json();
+        const keys:string[] = Object.keys(errorData.erros);
+        const keyOne:string = keys[0] as string;
+  
+        toast.error(errorData.erros[keyOne][0])
+      }
+
       const {data} = await res.json()
-     
       return data;
       
-  } catch (error: any) {
-      throw new Error(error)
-  }
 }
 
 export async function deleteCreditCard(creditCardId: string){
 
-  try {
+
     const res = await fetch(`http://localhost:8000/api/cards/${creditCardId}`, {
       method: 'DELETE',
       headers: {
@@ -97,24 +132,24 @@ export async function deleteCreditCard(creditCardId: string){
       }
     })
 
+    if (!res.ok) {
+      const errorData: ErrorResponse = await res.json();
+      const keys:string[] = Object.keys(errorData.erros);
+      const keyOne:string = keys[0] as string;
+
+      toast.error(errorData.erros[keyOne][0])
+    }
+
     return res.json();
     
-  } catch (error: any) {
-    throw new Error(error)
-  }
-
 }
 
 
 export async function getAdressCep(cep: string){
 
-  try {
     const res = await fetch(`http://viacep.com.br/ws/${cep}/json`)
 
     const data = await res.json();
     return data;
-  } catch (error: any) {
-    console.log(error)
-  }
 
 }

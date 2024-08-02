@@ -47,26 +47,29 @@ export function InputForm() {
   
   const mutation = useMutation({
     mutationFn: (newObj: ClientRequest) => PostClient(newObj),
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast.success("Cliente adicionado com sucesso")
       queryClient.invalidateQueries(); 
     },
-    onError: () => {
-      toast.error("Erro ao adicionar um cliente")
+    onError: (error) => {
+      console.log(error)
     },
   });
   
 
   async function getAdress(value:string){
     const valueUnFormat = unformat(value, MaskCep);
+
     if(valueUnFormat.length == 8){
-      const data: CepResponse = await getAdressCep(valueUnFormat);
-  
-      if(data){
-        setAdress(data.logradouro + " - " + data.bairro + " - " + data.localidade)
-      } 
-    return;
-  }
+      let data: CepResponse | any = await getAdressCep(valueUnFormat);
+      
+      if(data.erro == "true"){
+        return;
+      }
+
+      return setAdress(data.logradouro + " - " + data.bairro + " - " + data.localidade)
+      
+    }
   }
   async function onSubmit(data: z.infer<typeof clientFormSchema>) {
 
